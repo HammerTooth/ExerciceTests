@@ -8,6 +8,7 @@ class ArticlesController {
  
   async create(req, res, next) {
     try {
+      req.body.user = req.user._id
       const article = await articleService.create(req.body);
       req.io.emit("article:create", article);
       res.status(201).json(article);
