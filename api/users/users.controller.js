@@ -25,6 +25,18 @@ class UsersController {
       next(err);
     }
   }
+  async me(req, res, next) {
+    try {
+      const id = req.user._id;
+      const user = await usersService.get(id);
+      if (!user) {
+        throw new NotFoundError();
+      }
+      res.json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
   async create(req, res, next) {
     try {
       const user = await usersService.create(req.body);
@@ -37,6 +49,11 @@ class UsersController {
   }
   async update(req, res, next) {
     try {
+
+      if(req.user.role != "admin"){
+        throw new UnauthorizedError()
+      }
+
       const id = req.params.id;
       const data = req.body;
       const userModified = await usersService.update(id, data);
@@ -48,6 +65,11 @@ class UsersController {
   }
   async delete(req, res, next) {
     try {
+
+      if(req.user.role != "admin"){
+        throw new UnauthorizedError()
+      }
+
       const id = req.params.id;
       await usersService.delete(id);
       req.io.emit("user:delete", { id });
