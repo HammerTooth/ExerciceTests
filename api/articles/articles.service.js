@@ -12,6 +12,14 @@ class ArticlesService {
   delete(id) {
     return Article.deleteOne({ _id: id });
   }
+  async getAll(id) {
+    const articles = await Article.find().populate({
+      path: "user",
+      select: "-password",
+      match: { _id: id },
+    });
+    return articles.filter((article) => article.user);
+  }
 }
 
 module.exports = new ArticlesService();

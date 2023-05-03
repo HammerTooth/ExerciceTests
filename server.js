@@ -32,6 +32,7 @@ app.use(express.json());
 app.use("/api/users", authMiddleware, userRouter);
 app.use("/api/articles", authMiddleware, articleRouter);
 app.post("/login", usersController.login);
+app.get("/api/users/:id/articles", usersController.getAllArticlesByUserId);
 
 app.use("/", express.static("public"));
 
